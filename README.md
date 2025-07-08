@@ -8,6 +8,8 @@ npm install
 npm run install-all
 ```
 
+- Make sure ollama is running
+- You can replace/use your own LLM by changing MODEL value in /server/src/llm-util.js 
 ```
 npm start
 ```
