@@ -1,21 +1,47 @@
 import { useEffect, useRef, useState } from 'react';
+import { v4 as uuid } from 'uuid';
+
+import useSocket from '../../customHooks/useSocket';
 import './chat-layout.css';
 
 export default function ChatLayout() {
   const [messageBuffer, setMessageBuffer] = useState([]);
   const userMessageRef = useRef(null);
   const messageContainerRef = useRef(null);
+  const [loader, setLoader] = useState(false);
+
+  const handleSystemMessage = (data) => {
+    setLoader(false);
+    const updatedMessageBuffer = [...messageBuffer];
+    updatedMessageBuffer.push(data);
+    setMessageBuffer(updatedMessageBuffer);
+  };
+
+  const { actions } = useSocket({ handleSystemMessage });
 
   const handleSend = () => {
     if (!userMessageRef.current.value) return;
-    console.log(userMessageRef.current.value);
-    const messages = [...messageBuffer];
-    messages.push({
-      type: messageBuffer.length % 2 === 0 ? 'user' : 'system',
-      message: userMessageRef.current.value,
-    });
-    setMessageBuffer(messages);
+
+    const message = {
+      type: 'user',
+      content: userMessageRef.current.value,
+      id: uuid(),
+    };
+
+    const updatedMessageBuffer = [...messageBuffer];
+    updatedMessageBuffer.push(message);
+    setMessageBuffer(updatedMessageBuffer);
     userMessageRef.current.value = '';
+
+    // send message to server
+    setLoader(true);
+    actions.sendUserMessage(message);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.code === 'Enter') {
+      handleSend();
+    }
   };
 
   useEffect(() => {
@@ -30,19 +56,30 @@ export default function ChatLayout() {
       <div className="chat-layout__message-container" ref={messageContainerRef}>
         {messageBuffer.map((item) => (
           <div
-            className={`chat-layout__message chat-layout__message--${item.type}`}
+            className={`flex-container flex-container--${
+              item.type === 'user' ? 'right' : 'left'
+            }`}
           >
-            {item.message}
+            <div
+              key={item.id}
+              className={`chat-layout__message chat-layout__message--${item.type}`}
+            >
+              {item.content}
+            </div>
           </div>
         ))}
+        {loader && (
+          <div className="chat-layout__message">Loading Response...</div>
+        )}
       </div>
       <div className="chat-layout__action_items">
         <input
           ref={userMessageRef}
           name="user-message"
           type="text"
-          placeholder='Send a message...'
+          placeholder="Send a message..."
           className="chat-layout__action-items-input"
+          onKeyDown={handleKeyPress}
         />
         <button
           type="button"

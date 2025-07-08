@@ -1,11 +1,9 @@
-import { useEffect } from "react";
-import ChatLayout from "./Components/ChatLayout";
-import { connectWithSocketServer } from "./socketConnection";
+import ChatLayout from './Components/ChatLayout';
+import useSocketConnection from './customHooks/useSocketConnection';
 
 function App() {
-  useEffect(() => {
-    connectWithSocketServer();
-  } ,[])
+  useSocketConnection();
+
   return (
     <div>
       <ChatLayout />
