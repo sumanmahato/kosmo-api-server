@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
-import { v4 as uuid } from 'uuid';
+import { useEffect, useRef, useState } from "react";
+import { v4 as uuid } from "uuid";
 
-import useSocket from '../../customHooks/useSocket';
-import './chat-layout.css';
+import useSocket from "../../customHooks/useSocket";
+import "./chat-layout.css";
 
 export default function ChatLayout() {
   const [messageBuffer, setMessageBuffer] = useState([]);
@@ -11,6 +11,7 @@ export default function ChatLayout() {
   const [loader, setLoader] = useState(false);
 
   const handleSystemMessage = (data) => {
+    console.log("Received system message:", data);
     setLoader(false);
     const updatedMessageBuffer = [...messageBuffer];
     updatedMessageBuffer.push(data);
@@ -23,7 +24,7 @@ export default function ChatLayout() {
     if (!userMessageRef.current.value) return;
 
     const message = {
-      type: 'user',
+      type: "user",
       content: userMessageRef.current.value,
       id: uuid(),
     };
@@ -31,7 +32,7 @@ export default function ChatLayout() {
     const updatedMessageBuffer = [...messageBuffer];
     updatedMessageBuffer.push(message);
     setMessageBuffer(updatedMessageBuffer);
-    userMessageRef.current.value = '';
+    userMessageRef.current.value = "";
 
     // send message to server
     setLoader(true);
@@ -39,7 +40,7 @@ export default function ChatLayout() {
   };
 
   const handleKeyPress = (e) => {
-    if (e.code === 'Enter') {
+    if (e.code === "Enter") {
       handleSend();
     }
   };
@@ -47,7 +48,7 @@ export default function ChatLayout() {
   useEffect(() => {
     messageContainerRef.current.scroll({
       top: messageContainerRef.current.scrollHeight,
-      behavior: 'smooth',
+      behavior: "smooth",
     });
   }, [messageBuffer]);
 
@@ -57,7 +58,7 @@ export default function ChatLayout() {
         {messageBuffer.map((item) => (
           <div
             className={`flex-container flex-container--${
-              item.type === 'user' ? 'right' : 'left'
+              item.type === "user" ? "right" : "left"
             }`}
           >
             <div
