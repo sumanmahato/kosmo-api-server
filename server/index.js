@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
   res.send("Hello server is working")
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 server.listen(PORT, () => {
   console.log(`Server started at ${PORT}`)
