@@ -1,6 +1,6 @@
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-from models.ollama_wrapper import get_llm
+from app.models.ollama_wrapper import get_llm
 
 intent_prompt = PromptTemplate(
     input_variables=["user_input"],

@@ -1,6 +1,6 @@
 from langchain.agents import Tool, initialize_agent, AgentType
 from langchain_core.tools import tool
-from models.ollama_wrapper import get_llm
+from app.models.ollama_wrapper import get_llm
 
 def call_backend_api(params: dict) -> str:
     return f"API called with: {params}"
