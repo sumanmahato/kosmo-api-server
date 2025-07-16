@@ -11,6 +11,7 @@ Input: "{user_input}"
 
 Does this input require processing a data query (like finding data, retrieving filtered results, or searching for specific metrics)?
 If the input has anything to do with data or operations on it respond with "da_query"
-If the input doesnt have anything to do with data or queries respond with "unknown".
+If the input is a knowledge-based question related to the following topics: LangChain, Komprise, or Ollama, respond with "rag_query"
+If it doesn't fall into either of these categories, respond with "unknown"
 """
 )

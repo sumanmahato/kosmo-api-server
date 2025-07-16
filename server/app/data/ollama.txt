@@ -1,0 +1,5 @@
+# Getting Started with Ollama
+
+Ollama is a tool that allows you to run LLMs locally on your machine. It supports models like Mistral, LLaMA, and CodeLLaMA.
+
+Using Ollama, developers can avoid sending sensitive data to the cloud and run inference entirely offline. It integrates well with LangChain for local model orchestration.
