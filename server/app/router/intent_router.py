@@ -3,7 +3,7 @@ from app.models.ollama_wrapper import get_llm
 from app.prompts.intent_prompt import intent_prompt
 from langchain.chains import LLMChain, RetrievalQA
 
-from app.tools.vectorstore_loader import load_existing_vectorstore
+from app.tools.rag_tool import load_existing_vectorstore
 
 llm = get_llm()
 intent_chain = LLMChain(llm=llm, prompt=intent_prompt)
@@ -15,6 +15,11 @@ rag_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
 
 def route_intent(user_input: str):
     response = rag_chain.invoke({"query": user_input})
+    docs = retriever.get_relevant_documents(user_input)
+    if docs:
+        print(f"[RAG] Found {len(docs)} relevant documents.")
+    else:
+        print(f"[RAG] no relevant documents found")
     print("[RAG] Response:", response)
     return response["result"]
     classification = intent_chain.run({"user_input": user_input}).strip().lower()

@@ -1,4 +1,9 @@
 flask
 flask-socketio
 eventlet  # Needed for production-like async support
-langchain_community
+langchain_ollama
+psutil
+crawl4ai
+tqdm
+chromadb
+# run 'install playwright' seperately
