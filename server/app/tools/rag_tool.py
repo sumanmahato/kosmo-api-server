@@ -24,9 +24,9 @@ from crawl4ai import (
 
 from bs4 import BeautifulSoup
 
-from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
 from chromadb.config import Settings
 import chromadb
+from app.models.embedding_wrapper import get_embedding_model
 
 
 # Optional: Configure via env
@@ -86,62 +86,15 @@ def embed_documents_to_chroma(documents, persist_dir="chroma_db", batch_size=64)
     split_docs = splitter.split_documents(documents)
     print(f"[INFO] Split into {len(split_docs)} chunks.")
 
-    embedding_fn = SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
+    embeddings = get_embedding_model(EMBED_MODEL)
 
-    chroma_client = chromadb.Client(Settings(persist_directory=persist_dir))
-    collection = chroma_client.get_or_create_collection(
-        name="website_crawl",
-        embedding_function=embedding_fn
+    Chroma.from_documents(
+        documents=split_docs,
+        embedding=embeddings,
+        persist_directory=persist_dir
     )
-
-    print("[INFO] Adding documents to ChromaDB collection in batches...")
-
-    # Batching logic
-    for i in tqdm(range(0, len(split_docs), batch_size), desc="Embedding docs"):
-        batch = split_docs[i:i+batch_size]
-
-        batch_documents = [doc.page_content for doc in batch]
-        batch_ids = [f"doc-{i + j}" for j in range(len(batch))]
-        batch_metadatas = [doc.metadata for doc in batch]
-
-        try:
-            collection.add(
-                documents=batch_documents,
-                ids=batch_ids,
-                metadatas=batch_metadatas
-            )
-        except Exception as e:
-            print(f"[WARN] Failed to add batch {i}-{i + len(batch) - 1}: {e}")
-
-    print(f"[INFO] Successfully added {len(split_docs)} documents to {persist_dir}.")
-    print("[INFO] Splitting documents...")
-    splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
-    split_docs = splitter.split_documents(documents)
-    print(f"[INFO] Split into {len(split_docs)} chunks.")
-
-    embedding_fn = SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
-
-    # Create Chroma client with persistence
-    chroma_client = chromadb.Client(Settings(persist_directory=persist_dir))
-    collection = chroma_client.get_or_create_collection(
-        name="website_crawl",
-        embedding_function=embedding_fn
-    )
-
-    print("[INFO] collection done")
-
-    print("[INFO] Adding documents to ChromaDB collection...")
-    for i, doc in enumerate(tqdm(split_docs, desc="Embedding docs")):
-        try:
-            collection.add(
-                documents=[doc.page_content],
-                ids=[f"doc-{i}"],
-                metadatas=[doc.metadata]
-            )
-        except Exception as e:
-            print(f"[WARN] Failed to add doc-{i}: {e}")
-
-    print(f"[INFO] Successfully added {len(split_docs)} documents to {persist_dir}. Data is auto-persisted.")
+     
+    print(f"[INFO] added")
 
 def extract_urls_from_sitemap(sitemap_url: str) -> list[str]:
     headers = {

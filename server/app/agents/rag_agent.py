@@ -1,4 +1,4 @@
-from app.tools.vectorstore_loader import load_existing_vectorstore
+from app.tools.rag_tool import load_existing_vectorstore
 from langchain.chains import RetrievalQA
 from app.models.ollama_wrapper import get_llm
 
