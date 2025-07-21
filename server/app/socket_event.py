@@ -15,12 +15,10 @@ def on_connect():
 @socketio.on('user-message')
 def on_user_message(data):
     print(f"Received user message: {data}")
-
     message = data.get("message", "")
+    print(message)
     # user_id = data.get("userId", "anonymous")
-   
     agentResponse = route_intent(message['content'])
-
     response = {
         "content": agentResponse,
         "type": "system",
@@ -33,8 +31,8 @@ def on_user_message(data):
         #     }
         # }
     }
-
     # 🔄 send response back
+    print(response)
     socketio.emit('system-message', response)
 
 @socketio.on('disconnect')
