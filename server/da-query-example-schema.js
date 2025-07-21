@@ -36,20 +36,51 @@ const filterEnums = [
   "TAGS",
 ];
 
+const filetypes = [
+  "Archive",
+  "Audio",
+  "Binary",
+  "Database",
+  "DiskImage",
+  "Document",
+  "Image",
+  "Log",
+  "Mail",
+  "Presentation",
+  "Script",
+  "SourceCode",
+  "Spreadsheet",
+  "Text",
+  "Video",
+  "VirtualMachine",
+  "Other",
+];
+
+const filterTags = [
+  {
+    condition: null,
+    tags: [
+      {
+        label: "politician", // key
+        values: [
+          { id: 1, label: "Modi" },
+          { id: 2, label: "Trump" },
+        ],
+      },
+    ],
+  },
+];
+
 const schema = {
   lastModified: [], // date filter (only single value)
   lastAccessed: [], // date filter
   moved: [], // date filter
-  selectedFileTypes: [".txt", ".pdf", ".docx"],
-  fileExtensions: ["a", "b", "c"],
+  selectedFileTypes: [], // list of file types
+  fileExtensions: [".txt", ".png", ".pdf"],
   fileSizes: [], // file size filter (only single value)
   fileGroups: [], // string pattern filter (can have multiple values),
   fileOwners: [], // string pattern filter,
   directoryName: [], // string pattern filter
-  filterTags: {
-    condition: null,
-    tags: [],
-  },
+  filterTags,
   exclusions: [], // list of filter enums
-  includeMoveData: true,
 };
