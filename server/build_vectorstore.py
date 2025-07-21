@@ -1,6 +1,6 @@
 # scripts/build_vectorstore.py
 
-from app.tools.vectorstore_loader import build_vectorstore
+from server.app.tools.rag_tool import build_vectorstore_from_sitemap
 
 if __name__ == "__main__":
-    build_vectorstore("app/data")
+    build_vectorstore_from_sitemap("https://www.komprise.com/post-sitemap1.xml")

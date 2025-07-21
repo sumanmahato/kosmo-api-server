@@ -14,6 +14,9 @@ retriever = vectorstore.as_retriever(search_type="similarity")
 rag_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
 
 def route_intent(user_input: str):
+    response = rag_chain.invoke({"query": user_input})
+    print("[RAG] Response:", response)
+    return response["result"]
     classification = intent_chain.run({"user_input": user_input}).strip().lower()
     print(f"[DEBUG] Raw classification: {repr(classification)}")
 
