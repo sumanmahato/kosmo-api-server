@@ -7,13 +7,17 @@ from pydantic import BaseModel, Field
 
 parser = PydanticOutputParser(pydantic_object=QueryParams)
 
-def query_pipeline(user_input: str) -> str:
+def query_pipeline(user_input: str, history: str = "") -> str:
     """Extract structured parameters from user input"""
     llm = get_llm()
     chain = query_prompt | llm | parser
     
+    inputs = {"query": user_input}
+    if history:
+        inputs["history"] = history
+
     try:
-        structured = chain.invoke({"query": user_input})
+        structured = chain.invoke(inputs)
         return f"Successfully extracted query parameters: {structured.dict()}"
     except Exception as e:
         return f"Error parsing query: {str(e)}"

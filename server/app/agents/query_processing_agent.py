@@ -10,12 +10,15 @@ class QueryProcessorAgent:
         self.query_tool = query_tool
         self.api_tool = api_tool
     
-    def run(self, user_input: str) -> str:
+    def run(self, inputs: dict) -> str:
         """Execute the simple two-step query and api pipeline"""
+        user_input = inputs["user_input"]
+        history = inputs.get("history", "")
+
         try:
             
             print("[DEBUG] Step 1: Extracting query parameters...")
-            query_result = self.query_tool.func(user_input)
+            query_result = self.query_tool.func(user_input, history)
             print(f"[DEBUG] Query result: {query_result}")
 
             print("[DEBUG] Step 2: Calling API...")

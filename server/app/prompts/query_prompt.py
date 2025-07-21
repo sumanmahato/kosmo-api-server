@@ -26,12 +26,15 @@ query_prompt = PromptTemplate(
 Convert the following user request into a JSON object matching this schema:
 {format_instructions}
 
-
+Use the following conversation history to help you if it is relevant:
+<history>
+{history}
+</history>
 
 User input:
 {query}
 """,
-    input_variables=["query"],
+    input_variables=["query", "history"],
     partial_variables={"format_instructions": parser.get_format_instructions()}
 )
 
