@@ -3,8 +3,11 @@ from langchain.chains import LLMChain
 from app.models.ollama_wrapper import get_llm
 
 intent_prompt = PromptTemplate(
-    input_variables=["user_input"],
+    input_variables=["user_input", "history"],
     template="""
+Conversation history:
+{history}
+
 Classify the intent of the user input.
 
 Input: "{user_input}"
