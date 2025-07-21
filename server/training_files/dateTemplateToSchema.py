@@ -105,7 +105,7 @@ def generate_examples_once_per_template(templates_by_condition):
 
 # --- Run everything ---
 
-date_template_dir = "server/raw_train_json"
+date_template_dir = "./raw_train_json"
 date_templates_by_condition = load_clean_templates(date_template_dir)
 all_examples = generate_examples_once_per_template(date_templates_by_condition)
 
