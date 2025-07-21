@@ -56,7 +56,7 @@ def build_vectorstore(source_dir: str, persist_dir: str = CHROMA_DB_DIR, embed_m
         embedding=embeddings,
         persist_directory=persist_dir
     )
-    vectorstore.persist()
+    # vectorstore.persist()
     print(f"[INFO] Vectorstore built and saved to '{persist_dir}'")
 
     return vectorstore
