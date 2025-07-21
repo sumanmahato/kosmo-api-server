@@ -19,7 +19,6 @@ def on_connect():
 @socketio.on('user-message')
 def on_user_message(data):
     print(f"Received user message: {data}")
-
     message = data.get("message", "")
     session_id = request.sid
 
@@ -53,6 +52,8 @@ def on_user_message(data):
     memory.append({"role": "system", "content": agentResponse})
     save_conversation_history(session_id, memory, summary)
 
+
+    agentResponse = route_intent(message['content'])
     response = {
         "content": agentResponse,
         "type": "system",
@@ -65,8 +66,8 @@ def on_user_message(data):
         #     }
         # }
     }
-
     # 🔄 send response back
+    print(response)
     socketio.emit('system-message', response, room=request.sid)
 
 @socketio.on('disconnect')
