@@ -1,4 +1,9 @@
 flask
 flask-socketio
 eventlet  # Needed for production-like async support
+langchain_ollama
+psutil
+crawl4ai
+chromadb
 langchain_community
+# run 'install playwright' seperately to run build_vectorstore.py

@@ -8,12 +8,22 @@ intent_prompt = PromptTemplate(
 Conversation history:
 {history}
 
-Classify the intent of the user input.
+Classify the intent of the user input as either "da_query" or "rag_query".
 
 Input: "{user_input}"
 
-Does this input require processing a data query (like finding data, retrieving filtered results, or searching for specific metrics)?
-If the input has anything to do with data or operations on it respond with "da_query"
-If the input doesnt have anything to do with data or queries respond with "unknown".
+- **"da_query"**: Use this label **only if** the input is asking to perform a **process a data query**, such as:
+  - finding query data
+  - retrieving filtered results
+  - searching for specific metrics
+
+- **"rag_query"**: Use this label for all other inputs, including:
+  - general questions about komprise
+  - komprise product documentation, features, and how it works
+  - komprise knowledge-based or FAQ-style queries
+
+If the input does not clearly match the definition of a "da_query", default to **"rag_query"**.
+
+Only respond with one word: **"da_query"** or **"rag_query"**
 """
 )

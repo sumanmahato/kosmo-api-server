@@ -2,6 +2,7 @@ from app.agents.query_agent import get_query_agent
 from app.models.ollama_wrapper import get_llm
 from app.prompts.intent_prompt import intent_prompt
 from langchain.chains import LLMChain
+from app.agents.rag_agent import get_answer  # Centralized RAG logic
 from app.controllers.query_controller import handle_query_to_api
 from app.agents.query_processing_agent import get_query_processing_agent
 from app.conversation_utils import build_history
@@ -38,7 +39,16 @@ def route_intent(user_input: str, memory=None, summary=None):
     if classification == "da_query":
         agent = get_query_processing_agent()
         return agent.run(inputs)
+    
+    print("[Router] Falling back to RAG-based answer.")
+    # Fallback to RAG-based answer
+    rag_result = get_answer(user_input)
+    if rag_result.get("answer"):
+        print(f"[RAG] Answer: {rag_result['answer']}")
+        print(f"[RAG] Sources: {rag_result.get('sources')}")
+        return rag_result["answer"]
 
+    print("[Router] Falling back to base model with or without history")
     # Fallback to base model with or without history
     if history:
         prompt_with_history = f"History:\n{history}\n\nUser input: {user_input}"
