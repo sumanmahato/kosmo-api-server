@@ -5,13 +5,23 @@ from app.models.ollama_wrapper import get_llm
 intent_prompt = PromptTemplate(
     input_variables=["user_input"],
     template="""
-Classify the intent of the user input.
 
 Input: "{user_input}"
 
-Does this input require processing a data query (like finding data, retrieving filtered results, or searching for specific metrics)?
-If the input has anything to do with data or operations on it respond with "da_query"
-If the input is a knowledge-based question related to the following topics: LangChain, Komprise, or Ollama, respond with "rag_query"
-If it doesn't fall into either of these categories, respond with "unknown"
+Classify the intent of the user input as either "da_query" or "rag_query".
+
+- **"da_query"**: Use this label **only if** the input is asking to perform a **process a data query**, such as:
+  - finding query data
+  - retrieving filtered results
+  - searching for specific metrics
+
+- **"rag_query"**: Use this label for all other inputs, including:
+  - general questions about komprise
+  - komprise product documentation, features, and how it works
+  - komprise knowledge-based or FAQ-style queries
+
+If the input does not clearly match the definition of a "da_query", default to **"rag_query"**.
+
+Only respond with one word: **"da_query"** or **"rag_query"**
 """
 )

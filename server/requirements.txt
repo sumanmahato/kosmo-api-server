@@ -4,6 +4,6 @@ eventlet  # Needed for production-like async support
 langchain_ollama
 psutil
 crawl4ai
-tqdm
 chromadb
-# run 'install playwright' seperately
+langchain_community
+# run 'install playwright' seperately to run build_vectorstore.py
