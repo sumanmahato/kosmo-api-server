@@ -1,55 +1,58 @@
 from app.agents.query_agent import get_query_agent
 from app.models.ollama_wrapper import get_llm
 from app.prompts.intent_prompt import intent_prompt
-from langchain.chains import LLMChain, RetrievalQA
-
-from app.tools.rag_tool import load_existing_vectorstore
+from langchain.chains import LLMChain
+from app.agents.rag_agent import get_answer  # Centralized RAG logic
 
 llm = get_llm()
 intent_chain = LLMChain(llm=llm, prompt=intent_prompt)
 
-# Load vectorstore + setup retriever and RAG chain
-vectorstore = load_existing_vectorstore()
-retriever = vectorstore.as_retriever(search_type="similarity")
-rag_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
+def _classify_intent(user_input: str) -> str:
+    """
+    Classifies input as 'da_query', 'rag_query', or 'unknown'.
+    Cleans and normalizes the output.
+    """
+    try:
+        result = intent_chain.invoke({"user_input": user_input})
+        raw_classification = (
+            result.get("text", "") if isinstance(result, dict) else str(result)
+        ).strip().lower()
 
-def route_intent(user_input: str):
-    response = rag_chain.invoke({"query": user_input})
-    docs = retriever.get_relevant_documents(user_input)
-    if docs:
-        print(f"[RAG] Found {len(docs)} relevant documents.")
-    else:
-        print(f"[RAG] no relevant documents found")
-    print("[RAG] Response:", response)
-    return response["result"]
-    classification = intent_chain.run({"user_input": user_input}).strip().lower()
-    print(f"[DEBUG] Raw classification: {repr(classification)}")
+        print(f"[DEBUG] Raw classification output: {repr(raw_classification)}")
 
-    if "da_query" in classification:
-        agent = get_query_agent()
-        return agent.run(user_input)
-    elif "rag_query" in classification:
-        docs = retriever.get_relevant_documents(user_input)
-        if docs:
-            print(f"[RAG] Found {len(docs)} relevant documents.")
+        # Normalize output to exact values
+        if "da_query" in raw_classification:
+            return "da_query"
+        elif "rag_query" in raw_classification:
+            return "rag_query"
+        else:
+            return "unknown"
+    except Exception as e:
+        print(f"[ERROR] Intent classification failed: {e}")
+        return "unknown"
 
-            # Show some of the doc contents for debug
-            for i, doc in enumerate(docs):
-                print(f"[DOC {i+1}] {doc.page_content[:200]}...")
+def route_intent(user_input: str) -> str:
+    try:
+        # Step 1: Check RAG results first
+        rag_result = get_answer(user_input)
+        if rag_result['answer']:
+            print("[Router] RAG returned an answer, using RAG pipeline.")
+            print(f"[RAG] Answer: {rag_result['answer']}")
+            print(f"[RAG] Sources: {rag_result['sources']}")
+            return rag_result['answer']
 
-            # Optional: check if documents are truly relevant
-            if not any(word in doc.page_content.lower() for doc in docs for word in user_input.lower().split()):
-                print("[RAG] Docs found, but none match query meaningfully. Falling back to LLM.", llm.invoke(user_input).content)
-                return llm.invoke(user_input).content
+        # Step 2: If RAG doesn't return, check intent
+        classification = _classify_intent(user_input)
+        if classification == "da_query":
+            print("[Router] Detected DA Query.")
+            agent = get_query_agent()
+            return agent.run(user_input)
 
-            try:
-                response = rag_chain.invoke({"query": user_input})
-                print("[RAG] Response:", response)
-                return response["result"]
-            except Exception as e:
-                print("[ERROR] RAG generation failed:", str(e))
-                return "⚠️ An error occurred while answering your question."
+        else:
+            print("[Router] Fallback to LLM.")
+            return llm.invoke(user_input).content
 
-    else:
-        print("[RAG] No relevant documents found. Falling back to LLM.")
-        return llm.invoke(user_input).content
+    except Exception as e:
+        print(f"[ERROR] route_intent failed: {e}")
+        return "⚠️ Error processing your query."
+
