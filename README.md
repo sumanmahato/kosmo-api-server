@@ -18,7 +18,20 @@ pip install -r requirements.txt
 python main.py  # Server is running in port 5002
 ```
 
+Building the Vector Store
+```bash
+python app/scripts/build_vectorstore.py
+```
 
-- Make sure ollama is running
-- You can replace/use your own LLM by changing MODEL value in /server/app/models/ollama_wrapper.py
+Running the Server
+```bash
+python main.py  
+```
+
+Ollama Setup
+Ensure Ollama is running.
+You can replace or use your own LLM by changing the MODEL value in:
+```bash
+/server/app/models/ollama_wrapper.py
+```
 
