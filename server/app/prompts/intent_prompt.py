@@ -3,12 +3,14 @@ from langchain.chains import LLMChain
 from app.models.ollama_wrapper import get_llm
 
 intent_prompt = PromptTemplate(
-    input_variables=["user_input"],
+    input_variables=["user_input", "history"],
     template="""
-
-Input: "{user_input}"
+Conversation history:
+{history}
 
 Classify the intent of the user input as either "da_query" or "rag_query".
+
+Input: "{user_input}"
 
 - **"da_query"**: Use this label **only if** the input is asking to perform a **process a data query**, such as:
   - finding query data

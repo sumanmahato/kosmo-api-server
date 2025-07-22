@@ -3,48 +3,56 @@ from app.models.ollama_wrapper import get_llm
 from app.prompts.intent_prompt import intent_prompt
 from langchain.chains import LLMChain
 from app.agents.rag_agent import get_answer  # Centralized RAG logic
+from app.controllers.query_controller import handle_query_to_api
+from app.agents.query_processing_agent import get_query_processing_agent
+from app.conversation_utils import build_history
+import logging
+
+logger = logging.getLogger(__name__)
 
 llm = get_llm()
 intent_chain = LLMChain(llm=llm, prompt=intent_prompt)
 
-def _classify_intent(user_input: str) -> str:
-    """
-    Classifies input as 'da_query' or 'rag_query'.
-    """
-    try: 
-        result = intent_chain.invoke({"user_input": user_input})
-        classification = result.get("text", "").strip().lower()
-        print(f"[INFO] Intent classification result: {classification}")
-        if classification not in ["da_query", "rag_query"]:
-            return "rag_query"  # fallback if LLM response is invalid
-        return classification
-    except Exception as e:
-        print(f"[ERROR] Intent classification failed: {e}")
-        return "rag_query"
+def route_intent(user_input: str, memory=None, summary=None):
+    # Build context history safely
+    history = build_history(summary, memory)
 
-def route_intent(user_input: str) -> str:
-    try:
-        # Step 1: Classify the intent
-        classification = _classify_intent(user_input)
+    inputs = {
+        "user_input": user_input,
+        "history": history
+    }
+    print(f"[DEBUG] Inputs: {inputs} {summary}")
 
-        # Step 2: Handle DA query
-        if classification == "da_query":
-            print("[Router] Detected DA Query.")
-            agent = get_query_agent()
-            return agent.run(user_input)
+    # Run classification
+    response = intent_chain.invoke(inputs)
 
-        # Step 3: Fallback to RAG-based answer
-        rag_result = get_answer(user_input)
-        if rag_result['answer']:
-            print("[Router] Using RAG pipeline.")
-            print(f"[RAG] Answer: {rag_result['answer']}")
-            print(f"[RAG] Sources: {rag_result['sources']}")
-            return rag_result['answer']
+    # Adjust based on actual structure of response
+    if isinstance(response, dict) and "text" in response:
+        classification = response["text"].strip().lower()
+    else:
+        classification = str(response).strip().lower()
+        classification = intent_chain.invoke(inputs).strip().lower()
+    print(f"[INTENT] LLM classification response: '{classification}'")
+    print(f"[HISTORY]: '{history}'")
 
-        # Step 4: Final fallback to LLM
-        print("[Router] Fallback to LLM.")
-        return llm.invoke(user_input).content
+    # Route based on classification
+    if classification == "da_query":
+        agent = get_query_processing_agent()
+        return agent.run(inputs)
+    
+    print("[Router] Falling back to RAG-based answer.")
+    # Fallback to RAG-based answer
+    rag_result = get_answer(user_input)
+    if rag_result.get("answer"):
+        print(f"[RAG] Answer: {rag_result['answer']}")
+        print(f"[RAG] Sources: {rag_result.get('sources')}")
+        return rag_result["answer"]
 
-    except Exception as e:
-        print(f"[ERROR] route_intent failed: {e}")
-        return "⚠️ Error processing your query."
+    print("[Router] Falling back to base model with or without history")
+    # Fallback to base model with or without history
+    if history:
+        prompt_with_history = f"History:\n{history}\n\nUser input: {user_input}"
+        logger.debug(f"[LLM Fallback] Using history:\n{prompt_with_history}")
+        return llm.invoke(prompt_with_history).content
+
+    return llm.invoke(user_input).content
