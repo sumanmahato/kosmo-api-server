@@ -1,3 +1,0 @@
-LangChain is a framework that simplifies building LLM-powered applications.
-Ollama lets you run large language models and embedding models locally.
-Chroma is an open-source vector database that stores and retrieves embeddings.

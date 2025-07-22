@@ -10,7 +10,6 @@ intent_chain = LLMChain(llm=llm, prompt=intent_prompt)
 def _classify_intent(user_input: str) -> str:
     """
     Classifies input as 'da_query' or 'rag_query'.
-    Cleans and normalizes the output.
     """
     try: 
         result = intent_chain.invoke({"user_input": user_input})
