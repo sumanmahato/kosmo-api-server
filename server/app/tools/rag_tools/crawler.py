@@ -2,13 +2,14 @@ import asyncio
 import os
 import psutil
 import requests
+import trafilatura
 from bs4 import BeautifulSoup
 from langchain_core.documents import Document
 from crawl4ai import AsyncWebCrawler, BrowserConfig, CrawlerRunConfig, CacheMode, MemoryAdaptiveDispatcher
 
 async def crawl_parallel(urls, max_concurrent=10):
     """
-    Crawl multiple URLs in parallel and return a list of LangChain Documents.
+    Crawl multiple URLs in parallel and return a list of cleaned LangChain Documents using trafilatura.
     """
     print("\n=== Parallel Crawling with arun_many + Dispatcher ===")
 
@@ -40,17 +41,22 @@ async def crawl_parallel(urls, max_concurrent=10):
 
         documents = []
         for result in results:
-            if result.success and result.markdown:
-                documents.append(Document(page_content=result.markdown, metadata={"source": result.url}))
-                print(f"[OK] {result.url}")
+            if result.success and result.html:  # get raw HTML
+                text = trafilatura.extract(result.html)
+                if text:
+                    doc = Document(page_content=text, metadata={"source": result.url})
+                    documents.append(doc)
+                    print(f"[OK] {result.url}")
+                    print(f"--- Cleaned Text from {result.url} ---\n{text[:1000]}\n")
+                else:
+                    print(f"[SKIP] {result.url} - could not extract clean text")
             else:
                 print(f"[FAIL] {result.url}: {result.error_message}")
 
         log_memory("After crawl: ")
-        print(f"\n✅ Successfully crawled: {len(documents)} / {len(urls)}")
+        print(f"\n✅ Successfully crawled and cleaned: {len(documents)} / {len(urls)}")
         return documents
-
-
+    
 def extract_urls_from_sitemap(sitemap_url: str) -> list[str]:
     """
     Extract URLs from an XML sitemap.
