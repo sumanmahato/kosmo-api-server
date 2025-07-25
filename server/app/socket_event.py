@@ -53,7 +53,7 @@ def on_user_message(data):
     save_conversation_history(session_id, memory, summary)
 
 
-    agentResponse = route_intent(message['content'])
+
     response = {
         "content": agentResponse,
         "type": "system",

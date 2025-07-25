@@ -5,7 +5,7 @@ from app.tools.rag_tools.vectorstore import load_existing_vectorstore
 # Initialize LLM and vector store
 llm = get_llm()
 vectorstore = load_existing_vectorstore()
-retriever = vectorstore.as_retriever()
+retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 5})
 
 # Standard RAG Chain
 rag_chain = RetrievalQA.from_chain_type(
