@@ -20,7 +20,7 @@ python main.py  # Server is running in port 5002
 
 Building the Vector Store
 ```bash
-python app/scripts/build_vectorstore.py
+python build_vectorstore.py
 ```
 
 Running the Server
