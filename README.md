@@ -18,6 +18,7 @@ pip install -r requirements.txt
 
 Building the Vector Store
 ```bash
+run 'install playwright' if not done
 python build_vectorstore.py
 ```
 
