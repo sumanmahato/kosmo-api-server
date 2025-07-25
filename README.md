@@ -14,8 +14,6 @@ cd server
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-
-python main.py  # Server is running in port 5002
 ```
 
 Building the Vector Store
