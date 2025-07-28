@@ -14,7 +14,7 @@ def embed_documents_to_chroma(documents, persist_dir=CHROMA_DB_DIR, batch_size=6
     print(f"[INFO] Split into {len(split_docs)} chunks.")
 
     embeddings = get_embeddings()
-    Chroma.from_documents(split_docs, embeddings, persist_directory=persist_dir)
+    Chroma.from_documents(split_docs, embeddings, persist_directory=persist_dir, collection_name="kosmo-rag-db")
     print(f"[INFO] Chunks added to vectorstore at {persist_dir}")
 
 
