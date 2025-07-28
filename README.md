@@ -21,6 +21,11 @@ Building the Vector Store
 run 'install playwright' if not done
 python build_vectorstore.py
 ```
+RAG Embedding Text
+```bash
+ollama run nomic-embed-text:latest
+ollama run mistral:latest
+```
 
 Running the Server
 ```bash
