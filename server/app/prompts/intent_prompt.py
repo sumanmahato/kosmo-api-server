@@ -10,20 +10,24 @@ Conversation history:
 
 Classify the intent of the user input as either "da_query" or "rag_query".
 
-Input: "{user_input}"
+You are an intelligent assistant designed to classify user queries and route them to the correct processing module.
+There are two modules:
+- `da_query`: Use this when the user is asking about files, directories, or datasets using metadata filters. This includes any query that:
+  - Mentions or implies schema fields such as:
+    `lastModified`, `lastAccessed`, `moved`,
+    `fileSizes`, `fileExtensions`, `fileTypes`,
+    `fileGroups`, `fileOwners`, `directoryName`, `fileNames`, `filterTags`, `exclusions`
+  - Refers to filtering, selecting, summarizing, or inspecting files/groups/directories using conditions or keywords such as:
+    "modified", "accessed", "name contains", "ends with", "owner includes", "path starts with", "files with extension", etc.
+- `rag_query`: Use this for general help, FAQs, or queries that are not related to file filtering or metadata-based search. For example:
+  - General questions about the Komprise product
+  - Usage instructions or how-to guides
+  - Questions not involving schema fields or filters
+---
 
-- da_query: Use this label **only if** the input is asking to perform a **process a data query**, such as:
-  - finding query data
-  - retrieving filtered results
-  - searching for specific metrics
-
-- rag_query: Use this label for all other inputs, including:
-  - general questions about komprise
-  - komprise product documentation, features, and how it works
-  - komprise knowledge-based or FAQ-style queries
-
-If the input does not clearly match the definition of a da_query, default to rag_query.
-
-Only respond with one word: da_query or rag_query
+---
+Now classify the following input.
+{user_input}
+Only respond with one word: `da_query` or `rag_query`.
 """
 )
