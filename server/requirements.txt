@@ -7,4 +7,6 @@ crawl4ai
 chromadb
 langchain_community
 trafilatura
+transformers
+mlx_lm
 # run 'install playwright' seperately to run build_vectorstore.py
