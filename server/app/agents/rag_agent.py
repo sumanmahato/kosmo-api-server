@@ -11,14 +11,30 @@ retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k
 rag_chain = RetrievalQA.from_chain_type(
     llm=rag_llm,
     retriever=retriever,
-    return_source_documents=True  # Can help in debugging
+    return_source_documents=True, # Can help in debugging
 )
 
-def get_answer(query: str) -> dict:
+def get_answer(query: str, history: str, summary: str) -> dict:
     """
-    Get a RAG-based answer for the given query.
+    Get a RAG-based answer for the given query, incorporating summary and history.
     """
-    result = rag_chain.invoke({"query": query})
+
+
+    # Format input string
+    full_query = f"""
+    [Conversation Summary]
+    {summary}
+
+    [Conversation History]
+    {history}
+
+    [User Question]
+    {query}
+    """
+
+    print(f"[RAG] Full Query:\n{full_query.strip()}")
+
+    result = rag_chain.invoke({"query": full_query.strip()})
     return {
         "answer": result.get("result", ""),
         "sources": [doc.metadata for doc in result.get("source_documents", [])]

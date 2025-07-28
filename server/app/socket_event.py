@@ -3,7 +3,7 @@ from app import socketio
 import uuid
 
 from app.router.intent_router import route_intent
-from app.conversation_utils import get_conversation_history, save_conversation_history
+from app.conversation_utils import extract_summary_and_history, get_session_memory, build_context_for_llm
 # from app.agents.query_agent import get_query_agent
 # from app.agents.query_agent import handle_query  # example
 # or from app.tools.query_tool import run_query  # depending on your usage
@@ -19,43 +19,30 @@ def on_connect():
 @socketio.on('user-message')
 def on_user_message(data):
     print(f"Received user message: {data}")
-    message = data.get("message", "")
+    user_input = data.get("message", "")
     session_id = request.sid
 
-    # Retrieve and update session memory
-    conversation = get_conversation_history(session_id)
-    memory = conversation["memory"]
-    summary = conversation["summary"]
-    memory.append({"role": "user", "content": message['content']})
+    memory = get_session_memory(session_id)
 
-    # --- Summarization logic ---
-    if len(memory) > MAX_HISTORY:
-        from app.chains.summarize_chain import summarize_chain, format_history_for_summary
-        summary_result = summarize_chain.invoke({"history": format_history_for_summary(memory)})
+    # Step 1: Save user input with empty output
+    memory.save_context({"input": user_input['content']}, {"output": ""})
 
-        if isinstance(summary_result, dict) and 'text' in summary_result:
-            summary = summary_result['text']
-        else:
-            summary = str(summary_result)
+    # Step 2: Build full context (summary + recent messages)
+    context_for_llm = build_context_for_llm(memory=memory)
+    summary, history = extract_summary_and_history(context_for_llm)
 
-        # Keep only the most recent RECENT_HISTORY messages
-        memory = memory[-RECENT_HISTORY:]
-        print(f"[DEBUG] Memory: {memory}")
-        print(f"[DEBUG] Summary: {summary}")
+    # Step 3: Run the agent with full memory context
+    agent_response = route_intent(user_input['content'], summary=summary, history=history)
 
-    # Prepare context: summary + recent memory
-    context_memory = memory[-RECENT_HISTORY:]
-    
-    # Pass context to route_intent
-    agentResponse = route_intent(message['content'], memory=context_memory, summary=summary)
+    # Step 4: Fill the last assistant message with the actual response
+    memory.chat_memory.messages[-1].content = agent_response
 
-    memory.append({"role": "system", "content": agentResponse})
-    save_conversation_history(session_id, memory, summary)
-
-
+    # Debugging
+    print(f"[DEBUG] Summary: {memory.moving_summary_buffer}")
+    print(f"[DEBUG] Recent: {[m.content for m in memory.chat_memory.messages]}")
 
     response = {
-        "content": agentResponse,
+        "content": agent_response,
         "type": "system",
         "id": str(uuid.uuid4())
         # "action": {
