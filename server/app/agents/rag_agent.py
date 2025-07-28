@@ -1,9 +1,9 @@
 from langchain.chains import RetrievalQA
-from app.models.ollama_wrapper import get_llm_qwen
+from app.models.ollama_wrapper import get_llm
 from app.tools.rag_tools.vectorstore import load_existing_vectorstore
 
 # Initialize LLM and vector store
-rag_llm = get_llm_qwen()
+rag_llm = get_llm()
 vectorstore = load_existing_vectorstore()
 retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 5})
 
