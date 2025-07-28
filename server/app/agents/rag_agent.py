@@ -35,6 +35,16 @@ def get_answer(query: str, history: str, summary: str) -> dict:
     print(f"[RAG] Full Query:\n{full_query.strip()}")
 
     result = rag_chain.invoke({"query": full_query.strip()})
+
+    # Log number of retrieved chunks
+    print(f"Number of retrieved chunks: {len(result.get('source_documents', []))}")
+    
+    # Log relevant chunks
+    for i, doc in enumerate(result.get('source_documents', []), 1):
+        print(f"\n[CHUNK {i}]")
+        print(doc.page_content)
+        print(f"[Source] {doc.metadata.get('source', 'Unknown')}\n")
+
     return {
         "answer": result.get("result", ""),
         "sources": [doc.metadata for doc in result.get("source_documents", [])]
