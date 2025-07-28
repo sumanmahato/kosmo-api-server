@@ -36,7 +36,7 @@ def route_intent(user_input: str, summary: str = "", history: str = ""):
     # Route based on classification
     if classification == "da_query":
         agent = get_query_processing_agent()
-        return agent.run(inputs)
+        return agent.run(inputs), classification
     
     print("[Router] Falling back to RAG-based answer.")
     # Fallback to RAG-based answer
@@ -44,8 +44,4 @@ def route_intent(user_input: str, summary: str = "", history: str = ""):
     # if rag_result.get("answer"):
     print(f"[RAG] Answer: {rag_result['answer']}")
     print(f"[RAG] Sources: {rag_result.get('sources')}")
-    return rag_result["answer"]
-
-    print("[Router] Falling back to base model with or without history")
-
-    return llm.invoke(user_input).content
+    return rag_result, "rag_query"
