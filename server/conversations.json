@@ -1,0 +1,212 @@
+{
+  "dioCWOcXp7HonldjAAAB": {
+    "memory": [
+      {
+        "role": "user",
+        "content": "how much pfizer is saving by using Komprise ?"
+      },
+      {
+        "role": "system",
+        "content": " I'm sorry for any inconvenience, but the provided context does not contain information about how much Pfizer is saving by using Komprise. To find that information, you would need to look at specific case studies or news articles related to Pfizer and Komprise. The resources provided do include a Case Studies section where such information might be found. However, I don't have the ability to browse web pages or access real-time data, so I can't provide the exact savings figure."
+      },
+      {
+        "role": "user",
+        "content": "pfizers-cloud-data-gambit"
+      },
+      {
+        "role": "system",
+        "content": " Based on the provided context, Smart Data Workflows (SDW) can help find and segment sensitive data that contains Personal Identifiable Information (PII). This is achieved by scanning all new files through a PII scanner, which could be a third-party tool or a cloud service like Amazon Macie. The system then tags files containing PII information in the Komprise GFI.\n\nFiles tagged with PII are tiered to AWS Gov Cloud, while those without PII are moved to the regular, cheaper AWS cloud. This setup ensures continuous cost savings that comply with regulations.\n\nIn addition, Komprise offers various other use cases such as AI Ready Data, AI Data Workflows, Analyze Unstructured Data, Cloud File Migration, Cloud Tiering and Archiving, Ransomware Protection, Data Classification, Data Replication, Isilon Migration, Migrate NAS and Object Data, Optimize Cloud Data, and Sensitive Data Management."
+      }
+    ],
+    "summary": ""
+  },
+  "IjdXAUNlLtKPa0olAAAD": {
+    "memory": [
+      {
+        "role": "user",
+        "content": "what is komprise ?"
+      },
+      {
+        "role": "system",
+        "content": " Komprise is a data management solution that provides Smart Data Migration, Smart Data Management, and Smart Data Workflows. It helps organizations to manage their data across multiple storage systems, migrate data efficiently, and automate data workflows. The company offers various resources such as blog posts, case studies, webinars, events, videos, a technical professional program, and support for users to learn more about their services."
+      },
+      {
+        "role": "user",
+        "content": "who is krishna?"
+      },
+      {
+        "role": "system",
+        "content": " Krishna Subramanian is the COO of Komprise, a company that specializes in Intelligent Data Management. She is known for her leadership and dedication, and has been recognized as one of CRN's 2017 Women of the Channel. In terms of personality, she identifies with Princess Leia from Star Wars, admiring her fearlessness, dedication, strength, power, and compassion. More information about Krishna can be found in the article \"A Woman with Vision \u2013 Krishna Subramanian, COO\" on Komprise's blog."
+      }
+    ],
+    "summary": ""
+  },
+  "nV4fqK4hnBZ_BiaIAAAH": {
+    "memory": [
+      {
+        "role": "user",
+        "content": "how has pfizer has helped komprise ?"
+      },
+      {
+        "role": "system",
+        "content": " The provided context does not contain information about how Pfizer has helped Komprise. However, it does mention that Komprise offers Smart Data Migration, Smart Data Management, and Smart Data Workflows solutions, which could potentially be beneficial to organizations like Pfizer. For specific details about collaborations between Pfizer and Komprise, you may need to refer to their official websites or news articles."
+      },
+      {
+        "role": "user",
+        "content": "Pfizer Cold Data Storage Savings"
+      },
+      {
+        "role": "system",
+        "content": " The case in point is about Pfizer saving 75% on storage costs by using Komprise to analyze and continuously move cold data (data that is not actively accessed) to Amazon S3 as it ages. This strategy allows for additional benefits such as zero user disruption, a foundation for delivering self-service to line of business teams, and the potential for further savings through Deep Analytics and Global File Index features. The key advantage is that over 80% of data is cold, which can be stored on cheaper storage and does not require the same level of backup and replication as hot data (actively used data). This allows Pfizer to cut 75% of their data storage and backup costs without users noticing any change. You can read more about this in the blog post titled \"Pfizer's Cloud Data Migration.\""
+      }
+    ],
+    "summary": ""
+  },
+  "93OQ-OBXijFpfI6WAAAD": {
+    "memory": [
+      {
+        "role": "user",
+        "content": "how has pfizer has helped komprise ?"
+      },
+      {
+        "role": "system",
+        "content": " The provided context does not contain information about how Pfizer has helped Komprise. The resources listed are related to Komprise's products and services, such as Smart Data Migration, Smart Data Management, and Smart Data Workflows, as well as various informational resources like blog posts, case studies, webinars, events, videos, a technical professional program, and support."
+      }
+    ],
+    "summary": ""
+  },
+  "RV84-uA3MgPbKP-lAAAF": {
+    "memory": [
+      {
+        "role": "user",
+        "content": "how has komprise helped pfizer"
+      },
+      {
+        "role": "system",
+        "content": " To find out how Komprise has helped Pfizer, you can refer to the Case Studies section on the Komprise website. Specifically, look for case studies related to Smart Data Migration, Smart Data Management, and Smart Data Workflows as these are the services that Komprise offers.\n\nHere is the link to the Case Studies page: https://www.komprise.com/type/case-study/\n\nOn this page, you can find detailed information about how Komprise has helped various organizations, including Pfizer, manage and migrate their data effectively."
+      },
+      {
+        "role": "user",
+        "content": "Pfizer Cold Data Storage Savings"
+      },
+      {
+        "role": "system",
+        "content": " The case in point provided is about Pfizer saving 75% on storage costs by using Komprise to analyze and continuously move cold data to Amazon S3 as it ages. This strategy allows for the offloading of data from expensive storage and backups, as over 80% of data is not actively accessed and is considered cold. The benefits include zero user disruption and a foundation for delivering self-service to line of business teams. Pfizer plans to further leverage Komprise's Deep Analytics and Global File Index to allow authorized research users to search for their own data, copy or move it to locations for analysis. This strategy helps in managing hot data that is actively used and cold data that is rarely used differently, ultimately reducing storage and backup costs significantly without affecting the user experience."
+      }
+    ],
+    "summary": ""
+  },
+  "k3HTCeamd_lE8a58AAAD": {
+    "memory": [
+      {
+        "role": "user",
+        "content": "how has komprise helped pfizer?"
+      },
+      {
+        "role": "system",
+        "content": " To find out how Komprise has helped Pfizer, you can refer to the Case Studies section on the Komprise website. Specifically, look for case studies related to healthcare or life sciences industries, as Pfizer falls under these categories. The case studies provide detailed information about how Komprise's solutions have been implemented and the benefits they have brought to various organizations in those sectors.\n\nHere is the link to the Case Studies section: [Case Studies](https://www.komprise.com/type/case-study/)"
+      }
+    ],
+    "summary": ""
+  },
+  "mr8ObQp9QsusiXf_AAAD": {
+    "memory": [
+      {
+        "role": "user",
+        "content": "who is Bill Moore?"
+      },
+      {
+        "role": "system",
+        "content": " Bill Moore is a notable luminary who participated in the $12M B series funding for Komprise. He is known for being the co-founder of ZFS and an EMC Fellow."
+      },
+      {
+        "role": "user",
+        "content": "nothwestern university and komprise ?"
+      },
+      {
+        "role": "system",
+        "content": " Northwestern University has deployed Komprise storage management, which allows it to classify large amounts of research data and migrate it off to less costly media. This deployment has helped Northwestern cut annual spending on its central storage pool from $1.1m to $680,000 by moving data from Isilon scale-out NAS to media that is up to 66% cheaper to buy and run. Komprise empowers businesses to take control of their data with no interference to applications, users, or hot data. For more information about Komprise, you can visit their website at www.komprise.com or contact them at pr@komprise.com."
+      },
+      {
+        "role": "user",
+        "content": "netApps and komprise ?"
+      },
+      {
+        "role": "system",
+        "content": " Based on the provided context, NetApp and Komprise have expanded their partnership, with Komprise announcing two new capabilities at NetApp Insight 2019. For cloud-focused users, Komprise Data Migration now includes a Beta release of Amazon S3-based data migration to the NetApp StorageGRID, which simplifies the migration of data across cloud platforms. For on-premises deployments, Komprise Deep Analytics now supports NetApp Cloud Volumes ONTAP as a source.\n\nKomprise is an intelligent data management provider that empowers businesses to take control of their data without interfering with applications, users, or hot data. More information about Komprise can be found on their website at https://www.komprise.com/, and media inquiries can be directed to Declan Waters at pr@komprise.com."
+      }
+    ],
+    "summary": ""
+  },
+  "ozF--OIO2eF7-GReAAAD": {
+    "memory": [
+      {
+        "role": "user",
+        "content": "what is komprise ?"
+      },
+      {
+        "role": "system",
+        "content": "Komprise empowers businesses to take control of their data by efficiently managing massive scale data growth while unlocking its value. They achieve this through intelligent automation for data management. Komprise offers services that help in analyzing, moving, and finding your data across all storage types. They are recognized as the industry-leader in intelligent data management across clouds."
+      },
+      {
+        "role": "user",
+        "content": "who is krishna?"
+      },
+      {
+        "role": "system",
+        "content": "Krishna Subramanian is the COO at Komprise, according to the context provided."
+      },
+      {
+        "role": "user",
+        "content": "how has komprise helped pfizer"
+      },
+      {
+        "role": "system",
+        "content": "The context provided does not specifically mention how Komprise has helped Pfizer or any other company beyond general statements about its services and achievements. Therefore, I don't have enough details to answer the question about how Komprise has helped Pfizer."
+      }
+    ],
+    "summary": ""
+  },
+  "FFvtQsSoaLVde801AAAF": {
+    "memory": [
+      {
+        "role": "user",
+        "content": "what is komprise ?"
+      },
+      {
+        "role": "system",
+        "content": "Komprise empowers businesses to take control of their data by efficiently managing massive scale data growth while unlocking its value. They achieve this through intelligent automation for simplifying data management. Komprise offers a range of products and services including Intelligent Data Management, Elastic Data Migration, and KDX Komprise Data Experience, among others."
+      },
+      {
+        "role": "user",
+        "content": "who is krishna?"
+      },
+      {
+        "role": "system",
+        "content": "Krishna Subramanian is the COO at Komprise, according to the context provided."
+      },
+      {
+        "role": "user",
+        "content": "komprise & netApp"
+      },
+      {
+        "role": "system",
+        "content": "Komprise has expanded its support of NetApp platforms by introducing two new capabilities: Komprise Deep Analytics now supports NetApp CloudVolumes ONTAP\u00ae as a source, extending existing support for on-premises NetApp environments. Additionally, Komprise Data Migration now includes a Beta release of Amazon S3-based data migration to the NetApp StorageGRID\u00ae, aimed at simplifying the migration of data across cloud platforms."
+      }
+    ],
+    "summary": ""
+  },
+  "h8vh5HgYD8bTqZ2SAAAB": {
+    "memory": [
+      {
+        "role": "user",
+        "content": "who is krishna ?"
+      },
+      {
+        "role": "system",
+        "content": "Krishna Subramanian is the COO at Komprise, according to the context provided."
+      }
+    ],
+    "summary": ""
+  }
+}
