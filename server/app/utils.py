@@ -32,9 +32,7 @@ def _handle_rag_response(response: any) -> tuple[dict, list, str]:
     action_data = {}
     resources = []
     message = ""
-
-    [{'source': 'https://www.komprise.com/komprise-named-finalist-for-ai-deployment-in-the-2024-a-i-awards/'}, {'source': 'https://www.komprise.com/blog/is-your-data-ready-for-ai-inferencing/'}, {'source': 'https://www.komprise.com/blog/top-5-priorities-for-unstructured-data-management-in-2025/'}, {'tags': '["smart data workflow", "enable", "setup"]', 'updated_at': '2024-08-01T19:47:28Z', 'title': 'Enabling Smart Data Workflows', 'url': 'https://komprise.freshdesk.com/support/solutions/articles/17000141881', 'created_at': '2024-07-15T18:04:57Z'}, {'source': 'https://www.komprise.com/blog/is-your-data-ready-for-ai-inferencing/'}]
-
+ 
     if isinstance(response, dict):
         message = response.get("answer", "No answer generated.")
         data = response.get("sources", [])
