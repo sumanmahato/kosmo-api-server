@@ -50,22 +50,22 @@ def _handle_da_query(response: str) -> tuple[dict, str]:
 def _handle_rag_response(response: any) -> tuple[dict, list, str]:
     """
     Parses RAG/UNKNOWN response which is expected to be a dict or LLM result.
-
     Returns:
         (action_data, resources, message)
     """
     action_data = {}
     resources = []
     message = ""
-
     if isinstance(response, dict):
         message = response.get("answer", "No answer generated.")
-        resources = response.get("sources", [])
+        data = response.get("sources", [])
+        resources = [item.get("url", item.get("source")) for item in data if "url" in item or "source" in item]
+        print(">>>>>",  data, resources)
     elif hasattr(response, "content"):
         message = response.content
     else:
         message = str(response)
-
+    print("ajfjasfkjalksf>>>>", resources)
     return action_data, resources, message
 
 
