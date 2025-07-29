@@ -37,7 +37,7 @@ def route_intent(user_input: str, summary: str = "", history: str = ""):
     print(f"[INTENT] LLM classification response: '{cleaned_classification}'")
     if cleaned_classification == "da_query":
         agent = get_query_processing_agent()
-        return agent.run(inputs), classification
+        return agent.run(inputs), cleaned_classification
     
     print("[Router] Falling back to RAG-based answer.")
     # Fallback to RAG-based answer
