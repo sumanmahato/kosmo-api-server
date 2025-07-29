@@ -1,16 +1,40 @@
 # app/utils/response_utils.py
 import uuid
 import json
+from dateutil import parser
+from datetime import datetime
+
+
+def convert_to_ddmmyyyy(dates):
+    converted_dates = []
+    for date_str in dates:
+        try:
+            parsed_date = parser.parse(date_str, dayfirst=False)
+            formatted_date = parsed_date.strftime('%Y-%m-%d')
+            converted_dates.append(formatted_date)
+        except (ValueError, TypeError):
+            converted_dates.append(f"Invalid date: {date_str}")
+    return converted_dates
 
 def _handle_da_query(response: str) -> tuple[dict, str]:
     """
     Parses DA_QUERY response which is expected to be a JSON string.
 
-    Returns:
-        (action_data, message)
     """
     try:
         filters = json.loads(response)
+        for field_name in ["lastAccessed", "lastModified", "moved"]:
+            field_data = filters.get(field_name)
+            if field_data and isinstance(field_data, list) and len(field_data) > 0:
+                entry = field_data[0]
+                if "date" in entry:
+                    entry["date"] = convert_to_ddmmyyyy([entry["date"]])[0]
+                elif "data" in entry and "_" in entry["data"]:
+                    a, b = entry["data"].split("_", 1)
+                    a_conv, b_conv = convert_to_ddmmyyyy([a, b])
+                    entry["data"] = f"{a_conv}_{b_conv}"
+
+
         action_data = {"filters": filters}
         message = (
             "Your filters have been applied and the query is ready. "
@@ -19,6 +43,7 @@ def _handle_da_query(response: str) -> tuple[dict, str]:
     except json.JSONDecodeError:
         action_data = {}
         message = "Invalid filter format from query agent."
+
     return action_data, message
 
 
@@ -32,18 +57,15 @@ def _handle_rag_response(response: any) -> tuple[dict, list, str]:
     action_data = {}
     resources = []
     message = ""
- 
+
     if isinstance(response, dict):
         message = response.get("answer", "No answer generated.")
-        data = response.get("sources", [])
-        resources = [item.get("url", item.get("source")) for item in data if "url" in item or "source" in item]
-
-        print(">>>>>",  data, resources)
+        resources = response.get("sources", [])
     elif hasattr(response, "content"):
         message = response.content
     else:
         message = str(response)
-    print("ajfjasfkjalksf>>>>", resources)
+
     return action_data, resources, message
 
 
@@ -65,8 +87,6 @@ def get_response_content(response, intent_type: str = "UNKNOWN") -> dict:
     action_data = {}
     resources = []
     message = ""
-
-    print('-------------------', action)
 
     if action == "DA_QUERY":
         action_data, message = _handle_da_query(response)
