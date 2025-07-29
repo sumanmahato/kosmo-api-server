@@ -2,7 +2,6 @@ from app.models.ollama_wrapper import get_llm
 from app.prompts.intent_prompt import intent_prompt
 from langchain.chains import LLMChain
 from app.agents.rag_agent import get_answer  # Centralized RAG logic
-from app.controllers.query_controller import handle_query_to_api
 from app.agents.query_processing_agent import get_query_processing_agent
 import logging
 

@@ -12,9 +12,10 @@ class QueryProcessorAgent:
     
     def run(self, inputs: dict) -> str:
         """Execute the simple two-step query and api pipeline"""
+        print("USERINPT", inputs)
         user_input = inputs["user_input"]
-        history = inputs.get("history", "")
-
+        history = inputs.get("summary", "")
+        print("RANDOM HISTORY", history)
         try:
             
             print("[DEBUG] Step 1: Extracting query parameters...")

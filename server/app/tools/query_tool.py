@@ -1,4 +1,3 @@
-from langchain.output_parsers import PydanticOutputParser
 from app.prompts.query_prompt import query_prompt
 from langchain_core.tools import Tool
 from app.schemas.query_schema import QueryParams
@@ -6,13 +5,25 @@ from app.models.ollama_wrapper import get_llm
 from mlx_lm import generate
 from pydantic import BaseModel, Field
 
-parser = PydanticOutputParser(pydantic_object=QueryParams)
 
-def query_pipeline(user_input: str, llm: (), history: str = "") -> str:
+def should_include_history(user_input: str) -> bool:
+    user_input = user_input.lower()
+    return any(
+        phrase in user_input
+        for phrase in [
+            "add", "append", "also", "in addition", "along with", "plus", "refine", "update", "modify", "build on"
+        ]
+    )
+
+
+def query_pipeline(user_input: str, llm: (), history: str) -> str:
     """Extract structured parameters from user input"""
     model, tokenizer = llm
-    history.append({"role": "user", "content": user_input})
-    inputs = history
+    if should_include_history(user_input): 
+        print("IJADBFJBAIBABAJFDBJKADBFJKFBADKJBF")
+        inputs = [{"role": "user", "content": f'''use "{history}" as history to construct {user_input} '''}]
+    else:
+        inputs = [{"role": "user", "content": user_input}]
 
     try:
         text = tokenizer.apply_chat_template(
