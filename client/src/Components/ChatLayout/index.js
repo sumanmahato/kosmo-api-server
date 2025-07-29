@@ -66,6 +66,7 @@ export default function ChatLayout() {
               className={`chat-layout__message chat-layout__message--${item.type}`}
             >
               {item.content?.message || item.content}
+              {item.content?.resources?.map(d => <div>{d}</div>)}
             </div>
           </div>
         ))}

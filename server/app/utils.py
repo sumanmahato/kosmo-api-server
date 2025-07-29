@@ -32,15 +32,18 @@ def _handle_rag_response(response: any) -> tuple[dict, list, str]:
     action_data = {}
     resources = []
     message = ""
-
+ 
     if isinstance(response, dict):
         message = response.get("answer", "No answer generated.")
-        resources = response.get("sources", [])
+        data = response.get("sources", [])
+        resources = [item.get("url", item.get("source")) for item in data if "url" in item or "source" in item]
+
+        print(">>>>>",  data, resources)
     elif hasattr(response, "content"):
         message = response.content
     else:
         message = str(response)
-
+    print("ajfjasfkjalksf>>>>", resources)
     return action_data, resources, message
 
 
@@ -62,6 +65,8 @@ def get_response_content(response, intent_type: str = "UNKNOWN") -> dict:
     action_data = {}
     resources = []
     message = ""
+
+    print('-------------------', action)
 
     if action == "DA_QUERY":
         action_data, message = _handle_da_query(response)

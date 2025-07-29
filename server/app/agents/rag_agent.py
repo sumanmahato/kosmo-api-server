@@ -16,7 +16,7 @@ rag_chain = RetrievalQA.from_chain_type(
 
 def get_answer(query: str, history: str, summary: str) -> dict:
     """
-    Get a RAG-based answer for the given query, incorporating summary and history.
+    Get a RAG-based answer for the given query, incorporating summary and history. Use "[User Question]" for query
     """
 
 
