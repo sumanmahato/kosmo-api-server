@@ -34,7 +34,7 @@ def get_answer(query: str, history: str, summary: str) -> dict:
 
     print(f"[RAG] Full Query:\n{full_query.strip()}")
 
-    result = rag_chain.invoke({"query": query})
+    result = rag_chain.invoke({"query": full_query.strip()})
 
     # Log number of retrieved chunks
     print(f"Number of retrieved chunks: {len(result.get('source_documents', []))}")
