@@ -37,7 +37,6 @@ def on_user_message(data):
 
     # Step 4: Fill the last assistant message with the actual response
     memory.chat_memory.messages[-1].content = agent_response
-
     # Debugging
     print(f"[DEBUG] Summary: {memory.moving_summary_buffer}")
     print(f"[DEBUG] Recent: {[m.content for m in memory.chat_memory.messages]}")

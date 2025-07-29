@@ -1,4 +1,3 @@
-from app.agents.query_agent import get_query_agent
 from app.models.ollama_wrapper import get_llm
 from app.prompts.intent_prompt import intent_prompt
 from langchain.chains import LLMChain
@@ -31,10 +30,12 @@ def route_intent(user_input: str, summary: str = "", history: str = ""):
     else:
         classification = str(response).strip().lower()
         classification = intent_chain.invoke(inputs).strip().lower()
-    print(f"[INTENT] LLM classification response: '{classification}'")
+
 
     # Route based on classification
-    if classification == "da_query":
+    cleaned_classification = classification.strip('`"\'')
+    print(f"[INTENT] LLM classification response: '{cleaned_classification}'")
+    if cleaned_classification == "da_query":
         agent = get_query_processing_agent()
         return agent.run(inputs), classification
     
