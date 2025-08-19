@@ -1,22 +1,22 @@
-from langchain.memory import ConversationSummaryBufferMemory
 from app.models.ollama_wrapper import get_llm
+from app.chat_history_utils import ChatHistoryConversationSummaryBufferMemory
 
 _session_memories = {}
 
 # Tune this as needed (e.g., lower for quicker summarization)
 MAX_TOKEN_LIMIT = 100
 
-def get_session_memory(session_id):
+def get_session_memory(session_id) -> ChatHistoryConversationSummaryBufferMemory:
     if session_id not in _session_memories:
-        _session_memories[session_id] = ConversationSummaryBufferMemory(
+        _session_memories[session_id] = ChatHistoryConversationSummaryBufferMemory(
             llm=get_llm(),
             max_token_limit=MAX_TOKEN_LIMIT,
             return_messages=True,  # important to access message objects
-            memory_key="history"
+            memory_key="history",
         )
     return _session_memories[session_id]
 
-def build_context_for_llm(memory):
+def build_context_for_llm(memory:ChatHistoryConversationSummaryBufferMemory):
     """
     Returns list of messages to send to the LLM: summary + recent turns
     """
@@ -28,7 +28,7 @@ def build_context_for_llm(memory):
         context.append({"role": "system", "content": summary})
 
     context += [
-        {"role": msg.type, "content": msg.content}
+        msg.model_dump() # converts ChatMessage to dict
         for msg in recent_messages
     ]
 

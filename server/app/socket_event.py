@@ -1,6 +1,7 @@
 from flask import request
 from app import socketio
 import uuid
+import json
 
 from app.router.intent_router import route_intent
 from app.conversation_utils import extract_summary_and_history, get_session_memory, build_context_for_llm
@@ -26,7 +27,8 @@ def on_user_message(data):
     memory = get_session_memory(session_id)
 
     # Step 1: Save user input with empty output
-    memory.save_context({"input": user_input['content']}, {"output": ""})
+    
+    # memory.save_context({"input": user_input['content']}, {"output": ""})
 
     # Step 2: Build full context (summary + recent messages)
     context_for_llm = build_context_for_llm(memory=memory)
@@ -35,8 +37,10 @@ def on_user_message(data):
     # Step 3: Run the agent with full memory context
     agent_response, intent = route_intent(user_input['content'], summary=summary, history=history)
 
+    memory.save_context({"content": user_input['content'], "classifier": intent, "role": "user" }, {"content": json.dumps(agent_response), "classifier": intent, "role": "system"})
+
     # Step 4: Fill the last assistant message with the actual response
-    memory.chat_memory.messages[-1].content = agent_response
+    # memory.chat_memory.messages[-1].content = agent_response
     # Debugging
     print(f"[DEBUG] Summary: {memory.moving_summary_buffer}")
     print(f"[DEBUG] Recent: {[m.content for m in memory.chat_memory.messages]}")
