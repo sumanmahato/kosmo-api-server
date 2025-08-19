@@ -33,10 +33,16 @@ def on_user_message(data):
     summary, history = extract_summary_and_history(context_for_llm)
 
     # Step 3: Run the agent with full memory context
-    agent_response, intent = route_intent(user_input['content'], summary=summary, history=history)
+    agent_response, intent = route_intent(user_input["content"], summary=summary, history=history)
 
     # Step 4: Fill the last assistant message with the actual response
-    memory.chat_memory.messages[-1].content = agent_response
+    memory.chat_memory.messages[-1].content = {
+        "response": agent_response,
+        "classifier": intent,
+        "data": None,
+        "isConversationCompleted": False,
+    }
+
     # Debugging
     print(f"[DEBUG] Summary: {memory.moving_summary_buffer}")
     print(f"[DEBUG] Recent: {[m.content for m in memory.chat_memory.messages]}")

@@ -26,11 +26,23 @@ def build_context_for_llm(memory):
     context = []
     if summary:
         context.append({"role": "system", "content": summary})
-
-    context += [
-        {"role": msg.type, "content": msg.content}
-        for msg in recent_messages
-    ]
+    for msg in recent_messages:
+        if isinstance(msg.content, dict):
+            context.append({
+                "role": msg.type,
+                "content": msg.content.get("response", msg.content),
+                "classifier": msg.content.get("classifier"),
+                "data": msg.content.get("data"),
+                "isConversationCompleted": msg.content.get("isConversationCompleted"),
+            })
+        else:  # msg.content is a plain string
+            context.append({
+                "role": msg.type,
+                "content": msg.content,
+                "classifier": None,
+                "data": None,
+                "isConversationCompleted": False,
+            })
 
     return context
 
@@ -44,4 +56,4 @@ def extract_summary_and_history(messages: list[dict]):
         else:
             history.append(msg)
     
-    return summary, history
+    return summary, history[:-2]
