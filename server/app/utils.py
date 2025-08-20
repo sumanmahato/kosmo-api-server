@@ -18,12 +18,12 @@ def convert_to_ddmmyyyy(dates):
 
 def _handle_da_query(response: dict) -> tuple[dict, str]:
     """
-    Parses DA_QUERY response which is expected to be a JSON string.
+    Parses DA_QUERY response which is expected to be a JSON dit.
 
     """
     try:
+        
         filters = response["data"]
-        print(filters, "FILTERSSSSSSS")
         for field_name in ["lastAccessed", "lastModified", "moved"]:
             field_data = filters.get(field_name)
             if field_data and isinstance(field_data, list) and len(field_data) > 0:
