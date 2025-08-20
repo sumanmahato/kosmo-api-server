@@ -58,10 +58,10 @@ Now extract based on the conversation and the latest input.
 
 
 
-def build_workflow_config(extracted_params: dict, isComplete: bool) -> dict:
+def build_workflow_config(extracted_params: dict, workflow_message: str, isComplete: bool) -> dict:
     """Build the complete workflow configuration"""
     return {
-        "content": "Completed workflow has been created" if isComplete else "Please give more information",
+        "content": workflow_message,
         "classifier": "workflow",
         "isConversationComplete": isComplete,
         "data": extracted_params        
@@ -69,16 +69,45 @@ def build_workflow_config(extracted_params: dict, isComplete: bool) -> dict:
 
 def validate_workflow_config(extracted_params: dict) -> tuple:
     required_fields = ["workflowServiceClass", "tagKey", "displayName"]
-    missing_dict = {}
+    missing_arr = []
     isComplete = True
     for field in required_fields:
         if not extracted_params.get(field):
-            missing_dict[field] = 1
+            missing_arr.append(field)
             isComplete = False  
         else: 
             0
 
-    return (missing_dict, isComplete)
+    return (missing_arr, isComplete)
+
+def create_workflow_message(missing_arr: list) -> str:
+    if not missing_arr:
+        return "All required information is provided. Review the workflow details and create it."
+
+    field_map = {
+        "workflowServiceClass": "workflow action",
+        "tagKey": "tag key",
+        "displayName": "display name"
+    }
+
+    friendly_list = [f"<b>{field_map.get(field, field)}</b>" for field in missing_arr]
+
+    if len(friendly_list) == 1:
+        field_text = friendly_list[0]
+        verb = "is"
+    else:
+        field_text = ", ".join(friendly_list[:-1]) + f", and {friendly_list[-1]}"
+        verb = "are"
+
+    workflow_message = (
+        f"It looks like the {field_text} {verb} missing. "
+        f"Please provide {'it' if len(friendly_list) == 1 else 'them'} to move forward."
+    )
+
+    return workflow_message
+
+
+
 
 
 def workflow_pipeline(user_input: str, llm, query_id: str, summary, history) -> dict:
@@ -101,8 +130,9 @@ def workflow_pipeline(user_input: str, llm, query_id: str, summary, history) -> 
             extracted_params = json.loads(response_clean)
             print(f"[DEBUG] Extracted params: {extracted_params}")
             
-            missing_dict, isComplete = validate_workflow_config(extracted_params)
-            workflow_config = build_workflow_config(extracted_params, isComplete)
+            missing_arr, isComplete = validate_workflow_config(extracted_params)
+            workflow_message = create_workflow_message(missing_arr)
+            workflow_config = build_workflow_config(extracted_params, workflow_message, isComplete)
             
             return workflow_config
             

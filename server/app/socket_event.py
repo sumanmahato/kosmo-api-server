@@ -47,7 +47,6 @@ def on_user_message(data):
 
     response =  get_response_content(agent_response, intent)
     # 🔄 send response back
-    print(response)
     socketio.emit('system-message', response, room=request.sid)
 
 @socketio.on('disconnect')

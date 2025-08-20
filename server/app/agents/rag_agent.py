@@ -15,16 +15,26 @@ from app.agents.rag_pipline import RAGPipeline
 #     return_source_documents=True, # Can help in debugging
 # )
 
+def build_rag_config(extracted_params: dict) -> dict:
+    """Build the complete rag configuration"""
+    return {
+        "content": extracted_params,
+        "classifier": "rag_query",
+        "isConversationComplete": True,
+        "data": {}        
+    }
+
 def get_answer(query: str, history: str, summary: str) -> dict:
     """
     Get a RAG-based answer for the given query, incorporating summary and history. Use "[User Question]" for query
     """
     pipeline = RAGPipeline()
     result = pipeline.run(query, summary, history)
-    return {
+    result_dict = {
         "answer": result.get("answer", ""),
         "sources": result.get("sources", [])
     }
+    return build_rag_config(result_dict)
 
     # pipeline = RAGPipeline()
     
