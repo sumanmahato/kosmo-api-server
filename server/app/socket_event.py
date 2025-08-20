@@ -37,7 +37,7 @@ def on_user_message(data):
     # Step 3: Run the agent with full memory context
     agent_response, intent = route_intent(user_input['content'], summary=summary, history=history)
 
-    memory.save_context({"content": user_input['content'], "classifier": intent, "role": "user" }, {"content": json.dumps(agent_response), "classifier": intent, "role": "system"})
+    memory.save_context({"content": user_input['content'], "classifier": intent, "role": "user", "isConversationComplete": agent_response["isConversationComplete"]}, {"content": json.dumps(agent_response["content"]), "classifier": intent, "role": "system", "isConversationComplete": agent_response["isConversationComplete"], "data": agent_response["data"]})
 
     # Step 4: Fill the last assistant message with the actual response
     # memory.chat_memory.messages[-1].content = agent_response

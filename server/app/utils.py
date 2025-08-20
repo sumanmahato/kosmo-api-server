@@ -16,13 +16,14 @@ def convert_to_ddmmyyyy(dates):
             converted_dates.append(f"Invalid date: {date_str}")
     return converted_dates
 
-def _handle_da_query(response: str) -> tuple[dict, str]:
+def _handle_da_query(response: dict) -> tuple[dict, str]:
     """
     Parses DA_QUERY response which is expected to be a JSON string.
 
     """
     try:
-        filters = json.loads(response)
+        filters = response["data"]
+        print(filters, "FILTERSSSSSSS")
         for field_name in ["lastAccessed", "lastModified", "moved"]:
             field_data = filters.get(field_name)
             if field_data and isinstance(field_data, list) and len(field_data) > 0:

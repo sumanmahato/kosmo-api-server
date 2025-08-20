@@ -19,12 +19,27 @@ def get_answer(query: str, history: str, summary: str) -> dict:
     """
     Get a RAG-based answer for the given query, incorporating summary and history. Use "[User Question]" for query
     """
-
     pipeline = RAGPipeline()
-    
     result = pipeline.run(query, summary, history)
-
     return {
         "answer": result.get("answer", ""),
         "sources": result.get("sources", [])
     }
+
+    # pipeline = RAGPipeline()
+    
+    # result = pipeline.run(query, summary, history)
+
+    # return {
+    #     "answer": result.get("answer", ""),
+    #     "sources": result.get("sources", [])
+    # }
+
+# def get_answer(query: str, history: str, summary: str) -> dict:
+#     pipeline = RAGPipeline()
+#     result = pipeline.run(query, summary, history)
+#     return {
+#         "answer": result.get("answer", ""),
+#         "sources": result.get("sources", [])
+#     }
+

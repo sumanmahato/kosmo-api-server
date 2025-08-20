@@ -10,7 +10,7 @@ class QueryProcessorAgent:
         self.llm = get_llm()
         self.query_tool = query_tool
     
-    def run(self, inputs: dict) -> str:
+    def run(self, inputs: dict) -> dict:
         """Execute the simple two-step query and api pipeline"""
         print("USERINPT", inputs)
         user_input = inputs["user_input"]
