@@ -110,7 +110,7 @@ def create_workflow_message(missing_arr: list) -> str:
 
 
 
-def workflow_pipeline(user_input: str, llm, query_id: str, summary, history) -> dict:
+def workflow_pipeline(user_input: str, llm, summary, history) -> dict:
     """Extract workflow parameters using LLM and create workflow configuration"""
     
     chain = LLMChain(llm=llm, prompt=WORKFLOW_PROMPT)
@@ -137,17 +137,7 @@ def workflow_pipeline(user_input: str, llm, query_id: str, summary, history) -> 
             return workflow_config
             
         except json.JSONDecodeError as e:
-            print(f"[DEBUG] JSON parse error: {e}")
-            print(f"[DEBUG] Raw response: {response}")
-            
-            # Fallback to defaults if JSON parsing fails
-            default_params = {
-                "workflowServiceClass": "PII",
-                "tagKey": "Project",
-                "displayName": "PII-ai-demo"
-            }
-            workflow_config = build_workflow_config(default_params, query_id)
-            return workflow_config
+            return {"error": e}
             
     except Exception as e:
         return f"Error creating workflow: {str(e)}"

@@ -1,7 +1,6 @@
 # app/agents/workflow_agent.py
 from app.tools.workflow_tool import workflow_tool
 from app.models.ollama_wrapper import get_llm
-import json
 
 class WorkflowProcessorAgent:
     def __init__(self):
@@ -13,7 +12,6 @@ class WorkflowProcessorAgent:
         
         print("WORKFLOW INPUT", inputs)
         user_input = inputs["user_input"]
-        query_id = inputs.get("query_id", "1605")
 
         # mock_summary = "The human asks the AI to find directory paths where the path contains 'img'. The AI provides a response with various filters and conditions for searching files, specifically focusing on directories containing 'img' in their names."
         # mock_history = [
@@ -28,7 +26,6 @@ class WorkflowProcessorAgent:
             workflow_result = self.workflow_tool.func(
                 user_input,
                 self.llm,
-                query_id,
                 summary,
                 history
             )
