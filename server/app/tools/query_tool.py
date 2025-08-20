@@ -4,6 +4,7 @@ from app.schemas.query_schema import QueryParams
 from app.models.ollama_wrapper import get_llm
 from mlx_lm import generate
 from pydantic import BaseModel, Field
+import json
 
 
 def should_include_history(user_input: str) -> bool:
@@ -15,8 +16,16 @@ def should_include_history(user_input: str) -> bool:
         ]
     )
 
+def build_workflow_config(extracted_params: dict) -> dict:
+    """Build the complete workflow configuration"""
+    return {
+        "content": "Completed query has been created",
+        "classifier": "da_query",
+        "isConversationComplete": True,
+        "data": extracted_params        
+    }
 
-def query_pipeline(user_input: str, llm: (), history: str) -> str:
+def query_pipeline(user_input: str, llm: (), history: str) -> dict:
     """Extract structured parameters from user input"""
     model, tokenizer = llm
     if should_include_history(user_input): 
@@ -32,9 +41,9 @@ def query_pipeline(user_input: str, llm: (), history: str) -> str:
             add_generation_prompt=True
         )
         response = generate(model, tokenizer, prompt=text, verbose=True, max_tokens=512)
-        return f"{response}"
+        return build_workflow_config(json.loads(response))
     except Exception as e:
-        return f"Error parsing query: {str(e)}"
+        return {"error": e}
 
 query_tool = Tool(
     name="QueryProcessor",

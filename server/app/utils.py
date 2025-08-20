@@ -16,13 +16,14 @@ def convert_to_ddmmyyyy(dates):
             converted_dates.append(f"Invalid date: {date_str}")
     return converted_dates
 
-def _handle_da_query(response: str) -> tuple[dict, str]:
+def _handle_da_query(response: dict) -> tuple[dict, str]:
     """
-    Parses DA_QUERY response which is expected to be a JSON string.
+    Parses DA_QUERY response which is expected to be a JSON dict.
 
     """
     try:
-        filters = json.loads(response)
+        
+        filters = response["data"]
         for field_name in ["lastAccessed", "lastModified", "moved"]:
             field_data = filters.get(field_name)
             if field_data and isinstance(field_data, list) and len(field_data) > 0:
@@ -56,18 +57,37 @@ def _handle_rag_response(response: any) -> tuple[dict, list, str]:
     action_data = {}
     resources = []
     message = ""
-    if isinstance(response, dict):
-        message = response.get("answer", "No answer generated.")
-        data = response.get("sources", [])
+    response_dict = response["content"]
+    if isinstance(response_dict, dict):
+        message = response_dict.get("answer", "No answer generated.")
+        data = response_dict.get("sources", [])
         resources = [item.get("url", item.get("source")) for item in data if "url" in item or "source" in item]
         print(">>>>>",  data, resources)
-    elif hasattr(response, "content"):
-        message = response.content
+    elif hasattr(response_dict, "content"):
+        message = response_dict.content
     else:
-        message = str(response)
+        message = str(response_dict)
     print("ajfjasfkjalksf>>>>", resources)
     return action_data, resources, message
 
+def _handle_workflow(response: any) -> tuple[dict, str]:
+    """
+    Parses Workflow response which is expected to be a JSON dict.
+
+    """
+    try:
+        workflowParams = response["data"]
+        workflowIsComplete = response["isConversationComplete"]
+        workflowMessage = response["content"]
+        action_data = {
+            "workflowParams": workflowParams,
+            "isComplete": workflowIsComplete
+        }
+        return action_data, workflowMessage
+    
+    except json.JSONDecodeError:
+        action_data = {}
+        message = "Invalid filter format from query agent."
 
 def get_response_content(response, intent_type: str = "UNKNOWN") -> dict:
     """
@@ -90,9 +110,10 @@ def get_response_content(response, intent_type: str = "UNKNOWN") -> dict:
 
     if action == "DA_QUERY":
         action_data, message = _handle_da_query(response)
-
     elif action in ("RAG_QUERY", "UNKNOWN"):
         action_data, resources, message = _handle_rag_response(response)
+    elif action == "WORKFLOW":
+        action_data, message = _handle_workflow(response)
 
     else:
         message = str(response)
