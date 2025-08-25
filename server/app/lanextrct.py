@@ -140,8 +140,6 @@ def langextrct(input_list: list):
     
     input_text = "\n".join(reversed(input_list))
     
-    print("INPYjdkfskjdfbskbgkjsbkjgbsbgjksfgET", input_text)
-
     result = lx.extract(
         text_or_documents=input_text,
         prompt_description=prompt,
@@ -158,84 +156,3 @@ def langextrct(input_list: list):
         extracted_dict.update(e.attributes)
         
     return extracted_dict
-
-
-
-# import langextract as lx
-# import textwrap
-# from langextract.data import Document
-
-
-# # def prepare_conversation(history, new_input=None):
-# #     """
-# #     Convert history (list of dicts) + new input into a list of langextract Documents.
-# #     """
-# #     docs = []
-# #     for turn in history:
-# #         role = turn.get("role", "user")
-# #         text = turn["content"]
-# #         docs.append(Document(
-# #             text=text,
-# #             additional_context=f"Role: {role}"
-# #         ))
-    
-# #     if new_input:
-# #         docs.append(Document(
-# #             text=new_input,
-# #             additional_context="Role: user"
-# #         ))
-    
-# #     return docs
-
-
-
-
-# def langextrct(input):
-#     prompt = textwrap.dedent("""\
-#         Extract queryName from user input
-#         """)
-
-#     # 2. Provide examples (few-shot guidance)
-#     examples = [
-#         lx.data.ExampleData(
-#             text="use this PureStorage-cold-data to create a workflow",
-#             extractions=[
-#                 lx.data.Extraction(extraction_class="queryName", extraction_text="PureStorage-cold-data", attributes={"queryName":"PureStorage-cold-data"}),
-#             ]
-#         ),
-#         lx.data.ExampleData(
-#             text="use Cold Data 10+ MB to create a workflow for PII detection",
-#             extractions=[
-#                 lx.data.Extraction(extraction_class="queryName", extraction_text="Cold Data 10+ MB", attributes={"queryName":"Cold Data 10+ MB"}),
-#             ]
-#         ),
-#         lx.data.ExampleData(
-#             text="Create a workflow for Old NetApp VM's-Move-Cleanup",
-#             extractions=[
-#                 lx.data.Extraction(extraction_class="queryName", extraction_text="Old NetApp VM's-Move-Cleanup", attributes={"queryName":"Old NetApp VM's-Move-Cleanup"}),
-#             ]
-#         ),
-#     ]
-
-#     # 3. Run extraction
-#     result = lx.extract(
-#         text_or_documents=input,
-#         prompt_description=prompt,
-#         examples=examples,
-#         language_model_type=lx.inference.OllamaLanguageModel,
-#         model_id="mistral",
-#         model_url="http://localhost:11434",
-#         fence_output=False,          # output not fenced by ```json
-#         use_schema_constraints=False # can set True if you want strict schema
-#     )
-
-#     # 4. Save + visualize (optional)
-#     lx.io.save_annotated_documents([result], output_name="workflow_results.jsonl", output_dir=".")
-#     html_content = lx.visualize("workflow_results.jsonl")
-#     with open("workflow_visualization.html", "w") as f:
-#         f.write(html_content)
-
-#     print(result.extractions)
-
-
-# langextrct("generate a report for AMAZON 125 GB VMware")

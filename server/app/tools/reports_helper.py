@@ -108,8 +108,6 @@ def get_report_params(input_text: str):
             ]
         ),
     ]
-    
-    print("INPYjdkfskjdfbskbgkjsbkjgbsbgjksfgET", input_text)
 
     result = lx.extract(
         text_or_documents=input_text,
@@ -125,11 +123,6 @@ def get_report_params(input_text: str):
     extracted_dict = {}
     for e in result.extractions:
         extracted_dict.update(e.attributes)
-    print("EXTR", extracted_dict)    
-    
-    lx.io.save_annotated_documents([result], output_name="workflow_results.jsonl", output_dir=".")
-    html_content = lx.visualize("workflow_results.jsonl")
-    with open("workflow_visualization.html", "w") as f:
-        f.write(html_content)
+
         
     return extracted_dict
