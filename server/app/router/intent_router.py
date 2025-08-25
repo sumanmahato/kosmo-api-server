@@ -63,7 +63,7 @@ def route_intent(user_input: str, summary: str = "", history: list = None):
         return agent.run(inputs), "da_query"
     elif cleaned_classification == "workflow":
         agent = get_workflow_processing_agent()
-        return agent.run(inputs, mock_history, mock_summary), "workflow"
+        return agent.run(inputs, history, summary), "workflow"
 
     print("[Router] Falling back to RAG-based answer.")
     rag_result = get_answer(user_input, history=history, summary=summary)

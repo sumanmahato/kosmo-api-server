@@ -1,6 +1,6 @@
-from langchain_core.tools import Tool
-from langchain.chains import LLMChain
+from langchain_core.tools import Tool 
 from langchain.prompts import PromptTemplate
+from app.lanextrct import langextrct
 import json
 
 DEFAULT_PII_DEFINITIONS = [
@@ -25,8 +25,9 @@ WORKFLOW_PROMPT = PromptTemplate(
     template="""
 You are a workflow configuration assistant. 
 Extract the following information from the conversation so far, considering BOTH the past history and the latest user input. 
-If a field was already provided in the history, keep that value unless the user overrides it in the latest input. 
-If a field has never been provided, leave it empty.
+- If a field was already provided in the history, keep that value unless the user explicitly overrides it in the latest input. 
+- If a field has never been provided, leave it empty.
+- If the latest input is vague, incomplete, or ambiguous (e.g., "create a workflow"), DO NOT guess or invent values. Leave fields empty.
 
 Conversation history:
 {history}
@@ -39,18 +40,34 @@ Respond with ONLY a JSON object with these exact fields:
 {{
   "workflowServiceClass": "string (PII, AMAZON_REKOGNITION, or other classification type, empty if not provided)",
   "tagKey": "string (what label/tag to apply, empty if not provided)",
-  "displayName": "string (workflow name, empty if not provided)"
+  "displayName": "string (workflow name, kosmo-workflow if not provided)"
 }}
 
-Examples:
-User: "create a workflow to tag all PII data"
+Examples (each example is standalone — do not carry values across them):
+
+User: "create a workflow"
+Response: {{"workflowServiceClass": "", "tagKey": "", "displayName": ""}}
+
+User: "create a workflow for PII detection"
 Response: {{"workflowServiceClass": "PII", "tagKey": "", "displayName": ""}}
 
-User: "add Project as the tag"
-Response: {{"workflowServiceClass": "PII", "tagKey": "Project", "displayName": ""}}
+User: "add Department as the tag"
+Response: {{"workflowServiceClass": "", "tagKey": "Department", "displayName": ""}}
 
-User: "name it HR-Workflow"
-Response: {{"workflowServiceClass": "PII", "tagKey": "Project", "displayName": "HR-Workflow"}}
+User: "name it Finance-Flow"
+Response: {{"workflowServiceClass": "", "tagKey": "", "displayName": "Finance-Flow"}}
+
+User: "start a workflow for PII data"
+Response: {{"workflowServiceClass": "PII", "tagKey": "", "displayName": ""}}
+
+User: "attach tag Location"
+Response: {{"workflowServiceClass": "", "tagKey": "Location", "displayName": ""}}
+
+User: "call it Image-Security"
+Response: {{"workflowServiceClass": "", "tagKey": "", "displayName": "Image-Security"}}
+
+User: "create a workflow to classify documents"
+Response: {{"workflowServiceClass": "", "tagKey": "", "displayName": ""}}
 
 Now extract based on the conversation and the latest input.
 """
@@ -68,29 +85,28 @@ def build_workflow_config(extracted_params: dict, workflow_message: str, isCompl
     }
 
 def validate_workflow_config(extracted_params: dict) -> tuple:
-    required_fields = ["workflowServiceClass", "tagKey", "displayName"]
+    required_fields = ["workflowServiceClass", "tagKey", "displayName", "queryName"]
     missing_arr = []
     isComplete = True
     for field in required_fields:
+        extracted_params.setdefault(field, "")
         if not extracted_params.get(field):
             missing_arr.append(field)
-            isComplete = False  
-        else: 
-            0
+            if (field != "queryName"):
+                isComplete = False
 
     return (missing_arr, isComplete)
 
 def create_workflow_message(missing_arr: list) -> str:
-    if not missing_arr:
+    if not missing_arr or (len(missing_arr) == 1 and missing_arr[0] == "queryName"):
         return "All required information is provided. Review the workflow details and create it."
 
     field_map = {
-        "workflowServiceClass": "workflow action",
+        "workflowServiceClass": "workflow scanner",
         "tagKey": "tag key",
         "displayName": "display name"
     }
-
-    friendly_list = [f"<b>{field_map.get(field, field)}</b>" for field in missing_arr]
+    friendly_list = [f"<b>{field_map.get(field, field)}</b>" for field in missing_arr if field != "queryName"]
 
     if len(friendly_list) == 1:
         field_text = friendly_list[0]
@@ -106,33 +122,35 @@ def create_workflow_message(missing_arr: list) -> str:
 
     return workflow_message
 
-
+def build_history_list(history, user_input):
+    history_list = []
+    history_list.append(user_input)
+    for h in reversed(history):
+        if h["isConversationComplete"] == False:
+            history_list.append(h["type"] + ": " + h["content"])
+        elif h["isConversationComplete"] == True:
+            break
+    print("HYST", history_list)
+    return history_list
 
 
 
 def workflow_pipeline(user_input: str, llm, summary, history) -> dict:
     """Extract workflow parameters using LLM and create workflow configuration"""
     
-    chain = LLMChain(llm=llm, prompt=WORKFLOW_PROMPT)
-    
     try:
-
-        response = chain.run(user_input=user_input, history = history)
+        history_list = build_history_list(history, user_input)
+        response = langextrct(history_list)
+        # langextrct(history, user_input)
         print(f"[DEBUG] LLM response: {response}")
         
         try:
-            response_clean = response.strip()
-            if response_clean.startswith('```json'):
-                response_clean = response_clean.replace('```json', '').replace('```', '').strip()
-            elif response_clean.startswith('```'):
-                response_clean = response_clean.replace('```', '').strip()
-            
-            extracted_params = json.loads(response_clean)
-            print(f"[DEBUG] Extracted params: {extracted_params}")
-            
-            missing_arr, isComplete = validate_workflow_config(extracted_params)
+            print(f"[DEBUG] Extracted params: {response}")          
+            missing_arr, isComplete = validate_workflow_config(response)
+            print(missing_arr, "MISSER")
             workflow_message = create_workflow_message(missing_arr)
-            workflow_config = build_workflow_config(extracted_params, workflow_message, isComplete)
+            workflow_config = build_workflow_config(response, workflow_message, isComplete)
+
             
             return workflow_config
             
