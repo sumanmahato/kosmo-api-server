@@ -22,7 +22,6 @@ def _handle_da_query(response: dict) -> tuple[dict, str]:
 
     """
     try:
-        
         filters = response["data"]
         for field_name in ["lastAccessed", "lastModified", "moved"]:
             field_data = filters.get(field_name)
@@ -35,8 +34,8 @@ def _handle_da_query(response: dict) -> tuple[dict, str]:
                     a_conv, b_conv = convert_to_ddmmyyyy([a, b])
                     entry["data"] = f"{a_conv}_{b_conv}"
 
-
-        action_data = {"filters": filters}
+        action_data = {"filters": filters, "tagNames": response["tagNames"]}
+        # action_data = {"filters": filters}
         message = (
             "Your filters have been applied and the query is ready. "
             "You can now view, explore, or analyze the matching data."
@@ -110,6 +109,8 @@ def get_response_content(response, intent_type: str = "UNKNOWN") -> dict:
 
     if action == "DA_QUERY":
         action_data, message = _handle_da_query(response)
+        if response["actionType"] == "report":
+            action = "REPORT"
     elif action in ("RAG_QUERY", "UNKNOWN"):
         action_data, resources, message = _handle_rag_response(response)
     elif action == "WORKFLOW":
